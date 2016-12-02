@@ -1,16 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package closestpair;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-/**
- *
- * @author plenhart
- */
 public class ClosestPair {
     
     private static int MAX = Integer.MAX_VALUE -1; //used to generate random integers for arrays
@@ -31,7 +23,7 @@ public class ClosestPair {
     }
     
     //method will calculate the distance between two points
-    public double distance(int x1, int x2, int y1, int y2) //might need to make this return type int but not sure yet
+    public double distance(int x1, int x2, int y1, int y2) 
     {
        return Math.sqrt(((x2-x1) * (x2-x1)) + ((y2-y1) * (y2-y1)));
     }
@@ -62,15 +54,136 @@ public class ClosestPair {
         }
         closestPair[0] = closest1;
         closestPair[1] = closest2;
+        System.out.println(minDistance);
+        return closestPair;
+    }
+    
+       
+    //supporting method to sort arrays
+    public void merge(Point[]first,Point[]second,Point[]third)
+    {
+        int i = 0;
+        int j = 0;
+        int k = 0;
+        while(i < first.length & j < second.length)
+        {
+            if(first[i].getX() < second[j].getX())
+            {
+                third[k] = first[i];
+                i++;
+            }
+            else
+            {
+                third[k] = second[j];
+                j++;
+            }
+            k++;
+        }
+        System.arraycopy(first,i,third,k,first.length-i);
+        System.arraycopy(second,j,third,k,second.length-j);
+    }
+
+    //Non-linear sorting algorithm to sort array before being passed off to algorithm
+    public Point[] mergeSort(Point[] points)
+    {
+        if(points.length <= 1)
+            return points;
+        else
+        {
+            Point[] first = new Point[points.length/2];
+            Point[]second = new Point[points.length - first.length];
+            System.arraycopy(points, 0, first, 0, first.length);
+            System.arraycopy(points, first.length, second, 0, second.length);
+            mergeSort(first);
+            mergeSort(second);
+            merge(first,second,points);
+        }
+        return points;
+    }
+    
+    /*
+    public Point[] closestPair(Point[] points)
+    {
+        double minDistance = DOUBLE_MAX;
+        if(points.length <= 3)
+            return closestPairBruteForce(points);
+        else
+        {
+            Point[] leftPoints = new Point[points.length/2];
+            Point[] rightPoints
+        }
+    }
+    */
+
+    
+    
+    //method to find the closest pair in O(nlogn) time
+    //input is a sorted array, in this implementation we have used merge sort
+    public Point[] closestPair(Point[]points)
+    {
+        if(points.length <= 3)
+            return closestPairBruteForce(points);
+        int leftMid = points.length/2; //give length for left half 
+        int rightMid = points.length/2 + points.length%2; //give length for right half 
+        Point[] leftPoints = new Point[leftMid]; //create subarray for points on left half
+        Point[] rightPoints = new Point[rightMid]; //create subarray for points on right half
+        Point[] minLeft, minRight, closest;
+        
+        for(int i = 0; i < leftMid; i++)
+            leftPoints[i] = points[i]; //filling left half array
+        for(int j = 0; j < rightMid; j++)
+            rightPoints[j] = points[j + leftMid]; //filling right half array
+        
+        minLeft = closestPair(leftPoints); //reduce the left half to 2 points
+        leftMid = 5000; //give length for left half 
+        rightMid = 5000;
+        minRight = closestPair(rightPoints); //reduce the right half to 2 points
+        closest = combine(minLeft, minRight); //combine the closest from each half and compare them
+                                                                           //and determine the closest pair
+        return closest;
+    }
+    
+    //method that will compare the closest points from each half array and determine the closest pair
+    public Point[] combine(Point[] leftArr, Point[] rightArr)
+    {
+        double distLeft = distance(leftArr[0].getX(), leftArr[0].getY(), leftArr[1].getX(), leftArr[1].getY());
+        double distRight = distance(rightArr[0].getX(),rightArr[0].getY(), rightArr[1].getX(), rightArr[1].getY());
+        double theDistance; //the smallest distance of the two distances we have
+        if(distLeft < distRight)
+            theDistance = distLeft;
+        else
+            theDistance = distRight;
+        Point[] closestPair; //the actual closest pair
+        if(distLeft < distRight)
+            closestPair = leftArr;
+        else                                 //closest pair is either in the left or right array
+            closestPair = rightArr;
+       
+        //We must see if there is a case where the closest pair has one point in the right and one in the left
+        for(int i = 0; i < leftArr.length; i++)
+        {
+            for(int j = 0; j < rightArr.length; j++)
+            {
+                Point point1 = leftArr[i];
+                Point point2 = rightArr[j];
+                if(leftArr[i].getX() < rightArr[j].getX() + theDistance &&
+                        leftArr[i].getY() + theDistance > rightArr[j].getY() &&
+                        rightArr[j].getY() > leftArr[i].getY() - theDistance){
+                    if(distance(point1.getX(),point2.getX(),point1.getY(),point2.getY()) < theDistance)
+                        return new Point[] {point1, point2};
+                }
+            }
+        }
+        System.out.println(theDistance);
         return closestPair;
     }
 
    
     public static void main(String[] args) {
         ClosestPair close = new ClosestPair();
-        
+        /*
         //test this first (comment out second case so it only runs this case)
-        //case for 10,000 points
+        //case for 10,000 points O(n^2)
         long startTime = System.currentTimeMillis();
         Point[]test = new Point[10000];
         close.fillArray(test);
@@ -82,9 +195,10 @@ public class ClosestPair {
         long endTime = System.currentTimeMillis();
         System.out.println(endTime - startTime + "ms");
        
-        /*
+        
+        long startTime2 = System.currentTimeMillis();
         //test this second (comment out first case so it only runs this case)
-        //case for 1,000,000 points
+        //case for 1,000,000 points O(n^2)
         Point[]test2 = new Point[1000000];
         close.fillArray(test2);
         System.out.println("+++++Closest Pair+++++");
@@ -92,6 +206,38 @@ public class ClosestPair {
         for(int j = 0; j < answer2.length; j++){
             System.out.println(answer2[j]);
         }
+        long endTime2 = System.currentTimeMillis();
+        System.out.println(endTime2 - startTime2 +"ms");
+        */
+        
+         //test this first (comment out second case so it only runs this case)
+        //case for 10,000 points O(nlogn)
+        long startTime3 = System.currentTimeMillis();
+        Point[]test3 = new Point[10000];
+        close.fillArray(test3);
+        close.mergeSort(test3);
+        System.out.println("=====Closest Pair======");
+        Point[]answer3 = close.closestPair(test3);
+        for(int i = 0; i < answer3.length; i++){
+            System.out.println(answer3[i]);
+        }
+        long endTime3 = System.currentTimeMillis();
+        System.out.println(endTime3 - startTime3 + "ms");
+       
+        /*
+        long startTime4 = System.currentTimeMillis();
+        //test this second (comment out first case so it only runs this case)
+        //case for 1,000,000 points O(nlogn)
+        Point[]test4 = new Point[1000000];
+        close.fillArray(test4);
+        close.mergeSort(test4);
+        System.out.println("+++++Closest Pair+++++");
+        Point[]answer4 = close.closestPair(test4);
+        for(int j = 0; j < answer4.length; j++){
+            System.out.println(answer4[j]);
+        }
+        long endTime4 = System.currentTimeMillis();
+        System.out.println(endTime4 - startTime4 +"ms");
 */
     }
     
