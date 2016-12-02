@@ -30,7 +30,7 @@ public class ClosestPair {
     
     
     //This algorithm will solve the Closest Pair problem and do so in O(n^2) time
-    public Point[] closestPairBruteForce(Point[]points)
+    public Point[] closestPairBruteForce(Point[]points , int size)
     {
         //must apply pseudocode thats posted in the group chat
         //returns a Point which is the closest pair
@@ -38,9 +38,9 @@ public class ClosestPair {
         Point closest1 = null;
         Point closest2 = null;
         double minDistance = DOUBLE_MAX;
-        for(int i = 0; i < points.length; i++)
+        for(int i = 0; i < size; i++)
         {
-            for(int j = 0; j < i; j++)
+            for(int j = i+1; j < size; j++)
             {
                 Point temp1 = points[i];
                 Point temp2 = points[j];
@@ -119,35 +119,32 @@ public class ClosestPair {
     
     //method to find the closest pair in O(nlogn) time
     //input is a sorted array, in this implementation we have used merge sort
-    public Point[] closestPair(Point[]points)
+    public Point[] closestPair(Point[]points, int size)
     {
-        if(points.length <= 3)
-            return closestPairBruteForce(points);
-        int leftMid = points.length/2; //give length for left half 
-        int rightMid = points.length/2 + points.length%2; //give length for right half 
-        Point[] leftPoints = new Point[leftMid]; //create subarray for points on left half
-        Point[] rightPoints = new Point[rightMid]; //create subarray for points on right half
+        int mid = size/2;
+        if(size <= 3)
+            return closestPairBruteForce(points,size);
+        Point[] leftPoints = new Point[mid]; //create subarray for points on left half
+        Point[] rightPoints = new Point[mid]; //create subarray for points on right half
         Point[] minLeft, minRight, closest;
-        
-        for(int i = 0; i < leftMid; i++)
+        for(int i = 0; i < mid; i++)
             leftPoints[i] = points[i]; //filling left half array
-        for(int j = 0; j < rightMid; j++)
-            rightPoints[j] = points[j + leftMid]; //filling right half array
+        for(int j = mid; j < size-2; j++)
+            rightPoints[j/2] = points[j]; //filling right half array
         
-        minLeft = closestPair(leftPoints); //reduce the left half to 2 points
-        leftMid = 5000; //give length for left half 
-        rightMid = 5000;
-        minRight = closestPair(rightPoints); //reduce the right half to 2 points
-        closest = combine(minLeft, minRight); //combine the closest from each half and compare them
-                                                                           //and determine the closest pair
-        return closest;
+        minLeft = closestPair(leftPoints,size); //reduce the left half to 2 points
+        minRight = closestPair(rightPoints,size); //reduce the right half to 2 points
+        //closest = combine(minLeft, minRight); //combine the closest from each half and compare them
+      //and determine the closest pai
+         
+        return points;
     }
     
     //method that will compare the closest points from each half array and determine the closest pair
     public Point[] combine(Point[] leftArr, Point[] rightArr)
     {
-        double distLeft = distance(leftArr[0].getX(), leftArr[0].getY(), leftArr[1].getX(), leftArr[1].getY());
-        double distRight = distance(rightArr[0].getX(),rightArr[0].getY(), rightArr[1].getX(), rightArr[1].getY());
+        double distLeft = distance(leftArr[0].getX(), leftArr[1].getX(), leftArr[0].getY(), leftArr[1].getY());
+        double distRight = distance(rightArr[0].getX(),rightArr[1].getX(), rightArr[0].getY(), rightArr[1].getY());
         double theDistance; //the smallest distance of the two distances we have
         if(distLeft < distRight)
             theDistance = distLeft;
@@ -217,7 +214,7 @@ public class ClosestPair {
         close.fillArray(test3);
         close.mergeSort(test3);
         System.out.println("=====Closest Pair======");
-        Point[]answer3 = close.closestPair(test3);
+        Point[]answer3 = close.closestPair(test3,test3.length);
         for(int i = 0; i < answer3.length; i++){
             System.out.println(answer3[i]);
         }
