@@ -121,7 +121,7 @@ public class ClosestPair {
     //input is a sorted array, in this implementation we have used merge sort
     public Point[] closestPair(Point[]points, int size)
     {
-        int mid = size/2;
+        int mid = size/2+size%2;
         if(size <= 3)
             return closestPairBruteForce(points,size);
         Point[] leftPoints = new Point[mid]; //create subarray for points on left half
@@ -129,11 +129,11 @@ public class ClosestPair {
         Point[] minLeft, minRight, closest;
         for(int i = 0; i < mid; i++)
             leftPoints[i] = points[i]; //filling left half array
-        for(int j = mid; j < size-2; j++)
-            rightPoints[j/2] = points[j]; //filling right half array
-        
-        minLeft = closestPair(leftPoints,size); //reduce the left half to 2 points
-        minRight = closestPair(rightPoints,size); //reduce the right half to 2 points
+        for(int j = 0; j < mid; j++)
+            rightPoints[j] = points[mid+j-1]; //filling right half array    
+
+        minLeft = closestPair(leftPoints,mid); //reduce the left half to 2 points
+        minRight = closestPair(rightPoints,mid); //reduce the right half to 2 points
         //closest = combine(minLeft, minRight); //combine the closest from each half and compare them
       //and determine the closest pai
          
@@ -207,6 +207,7 @@ public class ClosestPair {
         System.out.println(endTime2 - startTime2 +"ms");
         */
         
+        /*
          //test this first (comment out second case so it only runs this case)
         //case for 10,000 points O(nlogn)
         long startTime3 = System.currentTimeMillis();
@@ -220,8 +221,9 @@ public class ClosestPair {
         }
         long endTime3 = System.currentTimeMillis();
         System.out.println(endTime3 - startTime3 + "ms");
-       
-        /*
+       */
+        
+        
         long startTime4 = System.currentTimeMillis();
         //test this second (comment out first case so it only runs this case)
         //case for 1,000,000 points O(nlogn)
@@ -229,13 +231,12 @@ public class ClosestPair {
         close.fillArray(test4);
         close.mergeSort(test4);
         System.out.println("+++++Closest Pair+++++");
-        Point[]answer4 = close.closestPair(test4);
+        Point[]answer4 = close.closestPair(test4,test4.length);
         for(int j = 0; j < answer4.length; j++){
             System.out.println(answer4[j]);
         }
         long endTime4 = System.currentTimeMillis();
         System.out.println(endTime4 - startTime4 +"ms");
-*/
     }
     
 }
