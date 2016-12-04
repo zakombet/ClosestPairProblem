@@ -121,23 +121,23 @@ public class ClosestPair {
     //input is a sorted array, in this implementation we have used merge sort
     public Point[] closestPair(Point[]points, int size)
     {
-        int mid = size/2+size%2;
+        int mid = size/2;
         if(size <= 3)
             return closestPairBruteForce(points,size);
         Point[] leftPoints = new Point[mid]; //create subarray for points on left half
         Point[] rightPoints = new Point[mid]; //create subarray for points on right half
-        Point[] minLeft, minRight, closest;
+        Point[] minLeft, minRight;
         for(int i = 0; i < mid; i++)
             leftPoints[i] = points[i]; //filling left half array
         for(int j = 0; j < mid; j++)
             rightPoints[j] = points[mid+j-1]; //filling right half array    
 
-        minLeft = closestPair(leftPoints,mid); //reduce the left half to 2 points
-        minRight = closestPair(rightPoints,mid); //reduce the right half to 2 points
-        //closest = combine(minLeft, minRight); //combine the closest from each half and compare them
-      //and determine the closest pai
-         
-        return points;
+        closestPair(leftPoints,mid); //reduce the left half to 2 points
+        closestPair(rightPoints,mid); //reduce the right half to 2 points
+        Point[] result = new Point[2];//array that will hold the closest pair
+        result = combine(leftPoints, rightPoints);
+    
+        return result;
     }
     
     //method that will compare the closest points from each half array and determine the closest pair
@@ -173,9 +173,8 @@ public class ClosestPair {
         }
         System.out.println(theDistance);
         return closestPair;
-    }
-
-   
+}
+    
     public static void main(String[] args) {
         ClosestPair close = new ClosestPair();
         /*
@@ -237,6 +236,7 @@ public class ClosestPair {
         }
         long endTime4 = System.currentTimeMillis();
         System.out.println(endTime4 - startTime4 +"ms");
+
     }
     
 }
