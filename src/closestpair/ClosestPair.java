@@ -181,24 +181,25 @@ public class ClosestPair {
         //test this first (comment out second case so it only runs this case)
         //case for 10,000 points O(n^2)
         long startTime = System.currentTimeMillis();
-        Point[]test = new Point[10000];
+        Point[]test = new Point[1000];
         close.fillArray(test);
         System.out.println("=====Closest Pair======");
-        Point[]answer = close.closestPairBruteForce(test);
+        Point[]answer = close.closestPairBruteForce(test,test.length);
         for(int i = 0; i < answer.length; i++){
             System.out.println(answer[i]);
         }
         long endTime = System.currentTimeMillis();
         System.out.println(endTime - startTime + "ms");
-       
+       */
         
+        /*
         long startTime2 = System.currentTimeMillis();
         //test this second (comment out first case so it only runs this case)
         //case for 1,000,000 points O(n^2)
         Point[]test2 = new Point[1000000];
         close.fillArray(test2);
         System.out.println("+++++Closest Pair+++++");
-        Point[]answer2 = close.closestPairBruteForce(test2);
+        Point[]answer2 = close.closestPairBruteForce(test2,test2.length);
         for(int j = 0; j < answer2.length; j++){
             System.out.println(answer2[j]);
         }
@@ -206,11 +207,11 @@ public class ClosestPair {
         System.out.println(endTime2 - startTime2 +"ms");
         */
         
-        /*
+        
          //test this first (comment out second case so it only runs this case)
         //case for 10,000 points O(nlogn)
         long startTime3 = System.currentTimeMillis();
-        Point[]test3 = new Point[10000];
+        Point[]test3 = new Point[1000];
         close.fillArray(test3);
         close.mergeSort(test3);
         System.out.println("=====Closest Pair======");
@@ -220,9 +221,9 @@ public class ClosestPair {
         }
         long endTime3 = System.currentTimeMillis();
         System.out.println(endTime3 - startTime3 + "ms");
-       */
+       
         
-        
+        /*
         long startTime4 = System.currentTimeMillis();
         //test this second (comment out first case so it only runs this case)
         //case for 1,000,000 points O(nlogn)
@@ -236,7 +237,7 @@ public class ClosestPair {
         }
         long endTime4 = System.currentTimeMillis();
         System.out.println(endTime4 - startTime4 +"ms");
-
+*/
     }
     
 }
